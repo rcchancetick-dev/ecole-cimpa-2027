@@ -12,46 +12,81 @@
     'return', '\u21D2', 'GF(p)', '\u2211', '\u03B1\u03B2\u03B3'
   ];
 
-  function resize() {
-    canvas.width = canvas.offsetWidth;
-    canvas.height = canvas.offsetHeight;
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (!reduceMotion) {
+    function resize() {
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    const particles = [];
+    const count = window.innerWidth < 640 ? 16 : 30;
+
+    for (let i = 0; i < count; i++) {
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        text: realSymbols[Math.floor(Math.random() * realSymbols.length)],
+        size: 14 + Math.random() * 20,
+        speedY: 0.15 + Math.random() * 0.3,
+        opacity: 0.08 + Math.random() * 0.14,
+        drift: Math.random() * Math.PI * 2
+      });
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => {
+        p.y -= p.speedY;
+        p.drift += 0.01;
+        p.x += Math.sin(p.drift) * 0.3;
+
+        if (p.y < -40) {
+          p.y = canvas.height + 40;
+          p.x = Math.random() * canvas.width;
+        }
+
+        ctx.font = `${p.size}px 'Poppins', sans-serif`;
+        ctx.fillStyle = `rgba(255, 255, 255, ${p.opacity})`;
+        ctx.fillText(p.text, p.x, p.y);
+      });
+      requestAnimationFrame(animate);
+    }
+    animate();
   }
-  resize();
-  window.addEventListener('resize', resize);
 
-  const particles = [];
-  const count = window.innerWidth < 640 ? 16 : 30;
+  // Animations d'entree au scroll
+  const revealEls = document.querySelectorAll('[data-reveal]');
 
-  for (let i = 0; i < count; i++) {
-    particles.push({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      text: realSymbols[Math.floor(Math.random() * realSymbols.length)],
-      size: 14 + Math.random() * 20,
-      speedY: 0.15 + Math.random() * 0.3,
-      speedX: (Math.random() - 0.5) * 0.2,
-      opacity: 0.08 + Math.random() * 0.14,
-      drift: Math.random() * Math.PI * 2
+  if (reduceMotion || !('IntersectionObserver' in window)) {
+    revealEls.forEach(el => el.classList.add('is-visible'));
+  } else {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const delay = parseInt(entry.target.getAttribute('data-reveal-delay') || '0', 10);
+          setTimeout(() => {
+            entry.target.classList.add('is-visible');
+          }, delay * 100);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, {
+      threshold: 0.15,
+      rootMargin: '0px 0px -60px 0px'
     });
+
+    revealEls.forEach(el => observer.observe(el));
   }
 
-  function animate() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    particles.forEach(p => {
-      p.y -= p.speedY;
-      p.drift += 0.01;
-      p.x += Math.sin(p.drift) * 0.3;
-
-      if (p.y < -40) {
-        p.y = canvas.height + 40;
-        p.x = Math.random() * canvas.width;
-      }
-
-      ctx.font = `${p.size}px 'Poppins', sans-serif`;
-      ctx.fillStyle = `rgba(255, 255, 255, ${p.opacity})`;
-      ctx.fillText(p.text, p.x, p.y);
-    });
-    requestAnimationFrame(animate);
+  // Masquer l'indicateur de scroll une fois qu'on a defile
+  const scrollCue = document.querySelector('.scroll-cue');
+  if (scrollCue) {
+    window.addEventListener('scroll', () => {
+      scrollCue.style.opacity = window.scrollY > 80 ? '0' : '1';
+    }, { passive: true });
   }
-  animate();
 })();
