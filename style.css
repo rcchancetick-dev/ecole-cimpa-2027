@@ -156,11 +156,11 @@ h1, h2, h3 {
 .btn {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  padding: 16px 32px;
+  gap: 8px;
+  padding: 14px 28px;
   border-radius: 12px;
   font-weight: 700;
-  font-size: 1.05rem;
+  font-size: 1rem;
   text-decoration: none;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   border: 2px solid transparent;
@@ -192,23 +192,23 @@ h1, h2, h3 {
 }
 
 .icon {
-  width: 20px;
-  height: 20px;
+  width: 15px;
+  height: 15px;
   flex-shrink: 0;
 }
 
 .icon-inline {
-  width: 16px;
-  height: 16px;
+  width: 13px;
+  height: 13px;
   flex-shrink: 0;
 }
 
 .deadline {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   color: #fca5a5;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   font-weight: 500;
 }
 
@@ -247,20 +247,20 @@ h1, h2, h3 {
 }
 
 .card-icon {
-  width: 48px;
-  height: 48px;
+  width: 34px;
+  height: 34px;
   display: flex;
   align-items: center;
   justify-content: center;
   background: rgba(37,99,235,0.1);
-  border-radius: 12px;
+  border-radius: 9px;
   color: var(--primary);
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
 
 .card-icon svg {
-  width: 24px;
-  height: 24px;
+  width: 17px;
+  height: 17px;
 }
 
 .card h3 {
